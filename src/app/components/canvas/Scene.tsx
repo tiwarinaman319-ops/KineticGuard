@@ -683,6 +683,21 @@ export function calculateCollisionProbability(
     severity,
   };
 }
+
+function ResponsivePostProcessing() {
+  const { size } = useThree();
+
+  if (size.width < 768) return null;
+
+  return (
+    <EffectComposer multisampling={0}>
+      <Bloom intensity={1.2} luminanceThreshold={0.7} luminanceSmoothing={0.3} mipmapBlur />
+      <ToneMapping mode={ToneMappingMode.ACES_FILMIC} />
+      <Vignette eskil={false} offset={0.12} darkness={0.9} />
+    </EffectComposer>
+  );
+}
+
 // ----------------------------------------------------
 // 2. NASA 3-SIGMA CONJUNCTION COVARIANCE ELLIPSOID
 // ----------------------------------------------------
@@ -814,12 +829,13 @@ export default function Scene({
   return (
     <div className="fixed inset-0 z-0 bg-black cursor-grab active:cursor-grabbing">
       <Canvas
-        dpr={[1, 2]}
+        dpr={[1, Math.min(typeof window !== "undefined" ? window.devicePixelRatio : 1, 1.5)]}
         camera={{ position: [0, 6, 13], fov: 48 }}
         gl={{
-          antialias: true,
           powerPreference: "high-performance",
-          alpha: false,
+          antialias: false,
+          stencil: false,
+          depth: true,
         }}
       >
         <ambientLight intensity={0.3} />
@@ -855,11 +871,7 @@ export default function Scene({
           touches={{ ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_PAN }}
         />
 
-        <EffectComposer multisampling={4}>
-          <Bloom intensity={1.2} luminanceThreshold={0.7} luminanceSmoothing={0.3} mipmapBlur />
-          <ToneMapping mode={ToneMappingMode.ACES_FILMIC} />
-          <Vignette eskil={false} offset={0.12} darkness={0.9} />
-        </EffectComposer>
+        <ResponsivePostProcessing />
       </Canvas>
     </div>
   );

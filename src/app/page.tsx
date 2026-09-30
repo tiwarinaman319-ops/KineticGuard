@@ -198,7 +198,7 @@ export default function Home() {
   }, [isAlertActive, countdown]);
 
   return (
-    <main className="relative w-screen h-screen bg-black text-white overflow-hidden selection:bg-cyan-500 selection:text-black font-sans">
+    <main className="relative w-screen h-[100dvh] overflow-hidden bg-black text-white selection:bg-cyan-500 selection:text-black font-sans">
       <Scene
         alertMode={isAlertActive}
         threatId={threatId}
@@ -422,6 +422,15 @@ export default function Home() {
           </button>
           <button
             onClick={() => {
+              setShowGroundTrack(true);
+              setMobileMenuOpen(false);
+            }}
+            className="w-full text-left py-2 px-3 rounded-lg bg-slate-900 text-slate-300 flex items-center gap-2 cursor-pointer"
+          >
+            <Globe2 className="w-3.5 h-3.5" /> GROUND TRACK
+          </button>
+          <button
+            onClick={() => {
               setActiveTab("architecture");
               setMobileMenuOpen(false);
             }}
@@ -619,13 +628,15 @@ export default function Home() {
       {/* Docked Telemetry Deck */}
       {activeTab === "monitor" && isInMissionMode && (
         <div
-          className={`fixed inset-x-2 sm:inset-x-4 bottom-2 sm:bottom-4 z-20 pointer-events-none transition-transform duration-500 ease-out ${
-            isHudMinimized ? "translate-y-[calc(100%+20px)]" : "translate-y-0"
+          className={`absolute left-2 right-2 md:top-16 md:left-4 md:right-auto md:w-80 max-h-[calc(100dvh-5rem)] flex flex-row gap-2 overflow-x-auto overflow-y-auto p-2 z-30 pointer-events-none transition-transform duration-500 ease-out md:flex-col md:overflow-x-hidden md:max-h-[calc(100dvh-5rem)] md:p-0 ${
+            selectedSatellite ? "top-[27rem] max-h-[calc(100dvh-29rem)]" : "top-16"
+          } ${
+            isHudMinimized ? "-translate-x-[calc(100%+20px)]" : "translate-x-0"
           }`}
         >
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-2 sm:gap-3 max-h-[46vh] sm:max-h-none overflow-y-auto sm:overflow-visible">
+          <div className="flex w-max gap-2 md:w-full md:flex-col">
             {/* Route Topology Card */}
-            <div className="border border-slate-800 bg-slate-950/90 backdrop-blur-md p-3 sm:p-3.5 rounded-xl pointer-events-auto shadow-xl flex flex-col justify-between">
+            <div className="w-[min(85vw,20rem)] flex-none border border-slate-800 bg-slate-950/90 backdrop-blur-md p-3 sm:p-3.5 rounded-xl pointer-events-auto shadow-xl flex flex-col justify-between md:w-full">
               <div>
                 <div className="flex items-center justify-between text-cyan-400 mb-1 font-mono text-xs">
                   <span className="flex items-center gap-1.5"><Activity className="w-3.5 h-3.5" /> ROUTE TOPOLOGY</span>
@@ -647,7 +658,7 @@ export default function Home() {
             </div>
 
             {/* Mission Terminal */}
-            <div className="border border-cyan-500/40 bg-slate-900/90 backdrop-blur-md p-3 sm:p-3.5 rounded-xl flex flex-col justify-between items-center text-center pointer-events-auto shadow-xl">
+            <div className="w-[min(85vw,20rem)] flex-none border border-cyan-500/40 bg-slate-900/90 backdrop-blur-md p-3 sm:p-3.5 rounded-xl flex flex-col justify-between items-center text-center pointer-events-auto shadow-xl md:w-full">
               <div>
                 <p className="text-[9px] font-mono text-cyan-400 uppercase tracking-widest mb-0.5">
                   LIVE NASA SSA TARGETING
@@ -706,7 +717,7 @@ export default function Home() {
             </div>
 
             {/* Risk Gauge */}
-            <div className="border border-slate-800 bg-slate-950/90 backdrop-blur-md p-3 sm:p-3.5 rounded-xl pointer-events-auto shadow-xl flex flex-col justify-between">
+            <div className="w-[min(85vw,20rem)] flex-none border border-slate-800 bg-slate-950/90 backdrop-blur-md p-3 sm:p-3.5 rounded-xl pointer-events-auto shadow-xl flex flex-col justify-between md:w-full">
               <div className="flex items-center justify-between text-amber-400 mb-1 font-mono text-xs">
                 <span className="flex items-center gap-1.5"><ShieldCheck className="w-3.5 h-3.5" /> RISK GAUGE</span>
                 <span className="text-slate-400 text-[10px]">TCA: {isAlertActive ? `${countdown}s` : "NOMINAL"}</span>
@@ -796,7 +807,7 @@ export default function Home() {
       {isInMissionMode && isHudMinimized && (
         <button
           onClick={() => setIsHudMinimized(false)}
-          className="fixed bottom-3 sm:bottom-5 left-1/2 -translate-x-1/2 z-30 px-3.5 py-1.5 sm:px-4 sm:py-2 bg-slate-950/90 border border-cyan-500/40 hover:border-cyan-400 rounded-full font-mono text-xs text-cyan-400 backdrop-blur-md shadow-2xl flex items-center gap-1.5 transition hover:scale-105 cursor-pointer"
+          className="fixed bottom-3 left-3 translate-x-0 sm:bottom-5 sm:left-1/2 sm:-translate-x-1/2 z-30 px-3.5 py-1.5 sm:px-4 sm:py-2 bg-slate-950/90 border border-cyan-500/40 hover:border-cyan-400 rounded-full font-mono text-xs text-cyan-400 backdrop-blur-md shadow-2xl flex items-center gap-1.5 transition hover:scale-105 cursor-pointer"
         >
           <ChevronUp className="w-3.5 h-3.5" />
           EXPAND HUD
